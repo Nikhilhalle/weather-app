@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: url('6-Best-Free-and-Paid-Weather-APIs.webp') no-repeat center center fixed;
+            background-size: cover;
+            padding: 20px;
+            color: white;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            color: black;
+        }
+        input {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 15px;
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <img src="6-Best-Free-and-Paid-Weather-APIs.webp" alt="Weather Background" style="width: 100%; height: auto; position: absolute; top: 0; left: 0; z-index: -1;">
+    <div class="container">
+        <h2>Weather App</h2>
+        <input type="text" id="location" placeholder="Enter city name">
+        <button onclick="getWeather()">Get Weather</button>
+        <div class="result" id="weatherResult"></div>
+    </div>
+
+    <script>
+        function getWeather() {
+            let location = document.getElementById('location').value;
+            if (!location) {
+                alert('Please enter a location');
+                return;
+            }
+            
+            let apiKey = 'a813951b2cba4f42b96155122252901';
+            let url = `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}&aqi=yes`;
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('weatherResult').innerHTML = `<p style="color:red;">${data.error.message}</p>`;
+                    } else {
+                        document.getElementById('weatherResult').innerHTML = `
+                            <p><strong>Location:</strong> ${data.location.name}, ${data.location.country}</p>
+                            <p><strong>Temperature:</strong> ${data.current.temp_c}°C</p>
+                            <p><strong>Condition:</strong> ${data.current.condition.text}</p>
+                            <img src="${data.current.condition.icon}" alt="Weather icon">
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching weather data:', error);
+                    document.getElementById('weatherResult').innerHTML = '<p style="color:red;">Error fetching data</p>';
+                });
+        }
+    </script>
+</body>
+</html>
